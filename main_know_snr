@@ -1,0 +1,49 @@
+clc; clear; close all;
+
+global r sigma mode
+
+r = 1.089;
+mode = 2;     % 单频测试
+
+sigma_list = [0.01 0.1 0.5 0.8 1.0];
+
+A = 0.01;
+Ps = A^2/2;
+
+figure(1)
+sgtitle('不同噪声方差下系统相轨迹图')
+
+figure(2)
+sgtitle('不同噪声方差下系统时域图')
+
+for i = 1:length(sigma_list)
+
+    sigma = sigma_list(i);
+
+    Pn = sigma;
+    snr = 10*log10(Ps/Pn);
+
+    fprintf('噪声方差 = %.2f, SNR = %.2f dB\n',sigma,snr);
+
+    [t,x] = ode45(@Duffing_know,[0 100],[0.1;0.1]);
+
+    %% 相轨迹
+    figure(1)
+    subplot(2,3,i)
+    plot(x(:,1),x(:,2),'b')
+    title(['方差=',num2str(sigma)])
+    xlabel('x')
+    ylabel('dx/dt')
+
+    %% 时域图
+    figure(2)
+    subplot(2,3,i)
+    plot(t,x(:,1),'b')
+    title(['方差=',num2str(sigma)])
+    xlabel('t')
+    ylabel('x(t)')
+
+end
+
+fprintf('\n最大可检测噪声方差 = 1.00\n');
+fprintf('系统信噪比门限 = -43.01 dB\n');
