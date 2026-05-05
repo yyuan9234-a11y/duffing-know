@@ -1,0 +1,29 @@
+function dx = Duffing_know(t,x)
+
+global r sigma mode
+
+k = 0.5;
+w = 1;
+
+% 高斯白噪声
+n = sqrt(sigma) * randn;
+
+% -------- 信号选择 ----------
+if mode == 1
+    % 三频模拟信号（验证有效性）
+    s = 0.01*(cos(5*t)+cos(10*t)+cos(15*t)) + n;
+else
+    % 单频模拟信号（SNR门限）
+    s = 0.01*cos(t) + n;
+end
+
+dx = zeros(2,1);
+
+dx(1) = w*x(2);
+
+dx(2) = w*(-k*(1+0.3*x(1)^2)*x(2) ...
+          -x(1)^5 + x(1)^3 ...
+          + r*cos(w*t) + s);
+
+dx = dx(:);
+end
