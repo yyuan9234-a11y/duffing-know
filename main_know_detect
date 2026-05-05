@@ -1,0 +1,37 @@
+clc; clear; close all;
+
+global r sigma mode
+
+r = 1.089;      % 精确阈值
+sigma = 0.01;   % 文献一致
+mode = 1;       % 三频信号
+
+tspan = [0 100];
+x0 = [0.1;0.1];
+
+[t,x] = ode45(@Duffing_know,tspan,x0);
+
+%% 原始信号与加噪信号
+tt = 0:0.01:100;
+s0 = 0.01*(cos(5*tt)+cos(10*tt)+cos(15*tt));
+sn = s0 + sqrt(sigma)*randn(size(tt));
+
+figure;
+plot(tt,sn,'c'); hold on;
+plot(tt,s0,'m','LineWidth',1.2);
+xlabel('t'); ylabel('振幅');
+title('原始信号与加噪信号波形图');
+legend('加噪信号','原始信号');
+
+%% 相轨迹 + 时域图
+figure;
+
+subplot(1,2,1)
+plot(x(:,1),x(:,2),'b');
+xlabel('x'); ylabel('dx/dt');
+title('系统相轨迹图');
+
+subplot(1,2,2)
+plot(t,x(:,1),'b');
+xlabel('t'); ylabel('x(t)');
+title('系统时域图');
